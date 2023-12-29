@@ -11,6 +11,8 @@ jobs:
         contents: write
     steps:
       - uses: actions/checkout@v4
+        with:
+            fetch-depth: 0
       - uses: devatherock/minify-js@v3.0.0
         with:
             add_suffix: false
