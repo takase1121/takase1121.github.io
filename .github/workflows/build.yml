@@ -7,6 +7,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+        contents: write
     steps:
       - uses: actions/checkout@v4
       - uses: devatherock/minify-js@v3.0.0
@@ -14,5 +16,6 @@ jobs:
             add_suffix: false
       - uses: stefanzweifel/git-auto-commit-action@v4
         with:
+            file_pattern: .
             commit_message: update
             branch: deploy
