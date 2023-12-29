@@ -16,7 +16,7 @@ jobs:
       - uses: devatherock/minify-js@v3.0.0
         with:
             add_suffix: false
-      - run: git stash; git checkout deploy; git stash apply
+      - run: git stash; git checkout deploy; git checkout stash -- .
       - uses: stefanzweifel/git-auto-commit-action@v4
         with:
             commit_message: update
