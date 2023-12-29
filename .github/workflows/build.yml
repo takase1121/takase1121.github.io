@@ -7,16 +7,23 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    
     permissions:
-        contents: write
+      pages: write
+      id-token: write
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
     steps:
       - uses: actions/checkout@v4
-        with:
-            fetch-depth: 0
       - uses: devatherock/minify-js@v3.0.0
         with:
+            output: build
             add_suffix: false
-      - run: git stash; git checkout deploy; git checkout stash -- .
-      - uses: stefanzweifel/git-auto-commit-action@v4
+      - uses: actions/upload-pages-artifact@v3
         with:
-            commit_message: update
+          path: build
+      - uses: actions/deploy-pages@v4
+        id: deployment

@@ -3,13 +3,24 @@
     src: url('IBMPloxMono-Regular.woff2');
 }
 
-body,
-footer {
+body {
     font-family: 'IBM Plox Mono', monospace;
-    padding: 2rem 3rem;
     margin: 0;
     background-color: rgb(247, 249, 249);
     color: rgb(89, 103, 119);
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+main {
+    max-width: 80%;
+    margin: 0 auto;
+    flex: 1;
+}
+
+footer {
+    margin-bottom: 0.5em;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -40,9 +51,6 @@ a:active {
 
 footer,
 footer p {
-    position: fixed;
-    bottom: 0;
-    left: 0;
     min-width: 100%;
     text-align: center;
 }
