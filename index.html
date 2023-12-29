@@ -1,39 +1,23 @@
 <!DOCTYPE HTML>
 <html lang="en">
+
 <head>
 	<meta charset="utf-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1" />
-	<link rel="shortcut icon" href="favicon.png">
+
+	<meta property="og:type" content="website">
+	<meta property="og:title" content="Takase :: $HOME">
+	<meta property="og:url" content="https://takase.top">
+	<meta property="og:image" content="">
+	<meta property="og:description" content="I code">
+
 	<title>Takase :: $HOME</title>
-	<style>
-		@font-face {
-			font-family: 'IBM Plox Mono';
-			src: url('IBMPloxMono-Regular.woff2');
-		}
-		body, footer {
-			font-family: 'IBM Plox Mono', monospace;
-			padding: 2rem 3rem;
-			margin: 0;
-			background-color: rgb(247,249,249);
-			color: rgb(89,103,119);
-		}
-		@media (prefers-color-scheme: dark) {
-			body, footer {
-				background-color: rgb(38,41,46);
-				color: rgb(189,195,199);
-			}
-		}
-		a {
-			color: rgb(255,99,118);
-		}
-		footer, footer p {
-			position: fixed;
-			bottom: 0;
-			left: 0;
-			min-width: 100%;
-			text-align: center;
-		}
-	</style>
+
+	<link rel="shortcut icon" href="favicon.png">
+	<link rel="preload" href="main.css" as="style" />
+	<link rel="preload" href="main.js" as="script" />
+	<link rel="stylesheet" href="main.css" />
+	<script type="application/javascript" src="main.js"></script>
 </head>
 
 <body>
@@ -51,22 +35,25 @@
 
 	<h2>Projects that I am working on:</h2>
 	<ul>
-		<li><a target="_blank" href="https://lite-xl.com">lite-xl</a> (as a contributor)</li>
+		<li><a target="_blank" href="https://lite-xl.com">Lite XL</a></li>
 		<li><a target="_blank" href="https://deivu.github.io/Kashima"> Kashima (not actively)</li>
-		<li><a target="_blank" href="https://github.com/takase1121?tab=repositories&q=&type=&language=&sort=stargazers">Some other small programs that never gained any traction...</a></li>
+		<li><a target="_blank"
+				href="https://github.com/takase1121?tab=repositories&q=&type=&language=&sort=stargazers">Some other
+				small programs that never gained any traction...</a></li>
 	</ul>
 
 	<h2>Contact me:</h2>
 	<p>Find me on these platforms:</p>
 	<ul>
 		<li>GitHub: <a target="_blank" href="https://github.com/takase1121">takase1121</a></li>
-		<li>Discord: <a target="_blank" href="https://discord.com">高瀬#2059</a></li>
+		<li>Discord: <a target="_blank" href="https://discord.com">@takase1121</a></li>
 		<li>Matrix: <a target="_blank" href="https://matrix.org">@takase:matrix.org</a></li>
 		<li>Email: <a href="mailto:takase1121@proton.me">takase1121@proton.me</a></li>
 	</ul>
 </body>
 
 <footer>
-	<p>2023&nbsp;Takase&nbsp;&#10084;&#65039;&nbsp;All rights reserved.</p>
+	<p>2023&nbsp;Takase&nbsp;<span id="heart">&#10084;&#65039;</span>&nbsp;All rights reserved.</p>
 </footer>
+
 </html>

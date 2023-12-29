@@ -1,0 +1,52 @@
+@font-face {
+    font-family: 'IBM Plox Mono';
+    src: url('IBMPloxMono-Regular.woff2');
+}
+
+body,
+footer {
+    font-family: 'IBM Plox Mono', monospace;
+    padding: 2rem 3rem;
+    margin: 0;
+    background-color: rgb(247, 249, 249);
+    color: rgb(89, 103, 119);
+}
+
+@media (prefers-color-scheme: dark) {
+
+    body,
+    footer {
+        background-color: rgb(38, 41, 46);
+        color: rgb(189, 195, 199);
+    }
+}
+
+a {
+    text-decoration: none;
+    color: #ff6376;
+    background-image: linear-gradient(#ff6376, #ff6376);
+    background-size: 0% 0.1em;
+    background-position-y: 100%;
+    background-position-x: 0%;
+    background-repeat: no-repeat;
+    transition: background-size 0.2s ease-in-out;
+}
+
+a:hover,
+a:focus,
+a:active {
+    background-size: 100% 0.1em;
+}
+
+footer,
+footer p {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    min-width: 100%;
+    text-align: center;
+}
+
+#heart {
+    cursor: grab;
+}
