@@ -18,10 +18,9 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-      - uses: devatherock/minify-js@v3.0.0
+      - uses: nizarmah/auto-minify@v3
         with:
             output: build
-            add_suffix: false
       - run: |
           mkdir -p build/.well-known/matrix
           echo "{\"m.server\":\"{{ secrets.MATRIX_SERVER }}\"}" > build/.well-known/matrix/server
