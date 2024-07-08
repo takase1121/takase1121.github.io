@@ -22,9 +22,11 @@ jobs:
         with:
             output: build
             overwrite: true
-      - run: |
+      - env:
+          MATRIX_SERVER: ${{ secrets.MATRIX_SERVER }}
+        run: |
           sudo mkdir -p build/.well-known/matrix
-          echo "{\"m.server\":\"{{ secrets.MATRIX_SERVER }}\"}" | sudo tee build/.well-known/matrix/server
+          echo "{\"m.server\":\"$MATRIX_SERVER\"}" | sudo tee build/.well-known/matrix/server
       - uses: actions/upload-pages-artifact@v3
         with:
           path: build
