@@ -22,6 +22,9 @@ jobs:
         with:
             output: build
             add_suffix: false
+      - run: |
+          mkdir -p .well-known/matrix
+          echo "{\"m.server\":\"{{ secrets.MATRIX_SERVER }}\"}" > .well-known/matrix/server
       - uses: actions/upload-pages-artifact@v3
         with:
           path: build
