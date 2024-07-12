@@ -27,6 +27,12 @@ jobs:
         run: |
           sudo mkdir -p build/.well-known/matrix
           echo "{\"m.server\":\"$MATRIX_SERVER\"}" | sudo tee build/.well-known/matrix/server
+          cat << EOF > build/.well-known/client
+          {
+            "org.matrix.msc3575.proxy": {"url": "$MATRIX_HTTP_SERVER"},
+            "m.homeserver": {"base_url": "$MATRIX_HTTP_SERVER"}
+          }
+          EOF
       - uses: actions/upload-pages-artifact@v3
         with:
           path: build
