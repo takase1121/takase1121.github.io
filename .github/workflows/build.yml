@@ -18,8 +18,10 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+      - run: rsync -avzh . build --exclude .git --exclude .github --exclude build
       - uses: nizarmah/auto-minify@v3
         with:
+            directory: build
             output: build
             overwrite: true
       - env:
