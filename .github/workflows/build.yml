@@ -24,6 +24,7 @@ jobs:
             overwrite: true
       - env:
           MATRIX_SERVER: ${{ secrets.MATRIX_SERVER }}
+          MATRIX_HTTP_SERVER: ${{ secrets.MATRIX_HTTP_SERVER }}
         run: |
           sudo mkdir -p build/.well-known/matrix
           echo "{\"m.server\":\"$MATRIX_SERVER\"}" | sudo tee build/.well-known/matrix/server
