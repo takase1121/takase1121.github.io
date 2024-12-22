@@ -27,7 +27,8 @@ jobs:
             directory: build
             output: build
             overwrite: true
-      - uses: lovasoa/setup-emscripten@master
+      - uses: mymindstorm/setup-emsdk@v14
+        with: { version: 3.1.70 }
       - run: |
           cd shell
           make
