@@ -19,12 +19,20 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-      - run: rsync -avzh . build --exclude .git --exclude .github --exclude build
+        with: { submodules: recursive }
+      - run: sudo apt-get install -y build-essential
+      - run: rsync -avzh . build --exclude .git --exclude .github --exclude build --exclude shell
       - uses: nizarmah/auto-minify@v3
         with:
             directory: build
             output: build
             overwrite: true
+      - uses: lovasoa/setup-emscripten@master
+      - run: |
+          cd shell
+          make
+          mkdir -p ../build/shell
+          cp index.html index.min.* shell.wasm ../build/shell
       - env:
           MATRIX_SERVER: ${{ secrets.MATRIX_SERVER }}
           MATRIX_HTTP_SERVER: ${{ secrets.MATRIX_HTTP_SERVER }}

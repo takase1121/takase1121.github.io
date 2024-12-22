@@ -1,0 +1,11 @@
+[submodule "shell/lua"]
+	path = shell/lua
+	url = https://github.com/lua/lua.git
+	branch = v5.4
+[submodule "shell/busybox"]
+	path = shell/busybox
+	url = http://git.busybox.net/busybox/
+	branch = 1_37_stable
+[submodule "shell/bestline"]
+	path = shell/bestline
+	url = https://github.com/jart/bestline.git

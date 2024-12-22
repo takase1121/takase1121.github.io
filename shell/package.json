@@ -1,0 +1,20 @@
+{
+  "name": "shell",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "build:js": "esbuild --bundle index.mjs --platform=browser --outfile=index.min.js",
+    "build:css": "esbuild --bundle index.css --outfile=index.min.css",
+    "build": "npm run build:js && npm run build:css"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@xterm/addon-fit": "^0.10.0",
+    "@xterm/xterm": "^5.5.0",
+    "esbuild": "^0.24.2",
+    "xterm-pty": "^0.10.2"
+  }
+}

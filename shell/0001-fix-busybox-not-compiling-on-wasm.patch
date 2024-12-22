@@ -1,0 +1,51 @@
+From 335681e64b30f4a7bef0b649d47423c82b1641ed Mon Sep 17 00:00:00 2001
+From: takase1121 <20792268+takase1121@users.noreply.github.com>
+Date: Sun, 22 Dec 2024 23:19:36 +0800
+Subject: [PATCH 1/1] fix busybox not compiling on wasm
+
+---
+ scripts/kconfig/lxdialog/check-lxdialog.sh | 2 +-
+ scripts/trylink                            | 6 ++----
+ 2 files changed, 3 insertions(+), 5 deletions(-)
+
+diff --git a/scripts/kconfig/lxdialog/check-lxdialog.sh b/scripts/kconfig/lxdialog/check-lxdialog.sh
+index 5075ebf2d..4e138366d 100755
+--- a/scripts/kconfig/lxdialog/check-lxdialog.sh
++++ b/scripts/kconfig/lxdialog/check-lxdialog.sh
+@@ -47,7 +47,7 @@ trap "rm -f $tmp" 0 1 2 3 15
+ check() {
+         $cc -x c - -o $tmp 2>/dev/null <<'EOF'
+ #include CURSES_LOC
+-main() {}
++int main() {}
+ EOF
+ 	if [ $? != 0 ]; then
+ 	    echo " *** Unable to find the ncurses libraries or the"       1>&2
+diff --git a/scripts/trylink b/scripts/trylink
+index 2255deee7..26c21142c 100755
+--- a/scripts/trylink
++++ b/scripts/trylink
+@@ -96,7 +96,7 @@ fi
+ START_GROUP="-Wl,--start-group"
+ END_GROUP="-Wl,--end-group"
+ INFO_OPTS() {
+-	echo "-Wl,--warn-common -Wl,-Map,$EXE.map -Wl,--verbose"
++	echo "-Wl,-Map,$EXE.map -Wl,--verbose"
+ }
+ 
+ # gold may not support --sort-common (yet)
+@@ -255,10 +255,8 @@ if test "$CONFIG_BUILD_LIBBUSYBOX" = y; then
+     try $CC $CFLAGS $LDFLAGS \
+ 	    -o $EXE \
+ 	    -shared -fPIC $LBB_STATIC \
+-	    -Wl,--enable-new-dtags \
+-	    -Wl,-z,combreloc \
+ 	    -Wl,-soname="libbusybox.so.$BB_VER" \
+-	    -Wl,--undefined=lbb_main \
++	    -Wl,--whole-archive \
+ 	    $SORT_COMMON \
+ 	    $SORT_SECTION \
+ 	    $START_GROUP $A_FILES $END_GROUP \
+-- 
+2.47.1
+
