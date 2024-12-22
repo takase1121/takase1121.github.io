@@ -1,7 +1,7 @@
 window.onload = function () {
     var commitDy, commitDx, lastX, lastY;
     var love = document.getElementById("heart");
-    var friction = 0.0005,
+    var friction = 0.005,
         dx = 0,
         dy = 0,
         drag = false;
@@ -42,6 +42,7 @@ window.onload = function () {
     function onMouseMove(e) {
         if (!drag) return;
         if (e instanceof TouchEvent) {
+            e.preventDefault();
             e = findFinger(e.touches, finger);
             if (!e) return;
         }
@@ -59,7 +60,7 @@ window.onload = function () {
     function onMouseUp(e) {
         if (!drag) return;
         if (e instanceof TouchEvent) {
-            e = findFinger(e.touches, finger);
+            e = findFinger(e.changedTouches, finger);
             if (!e) return;
         }
         drag = false;
@@ -70,9 +71,13 @@ window.onload = function () {
         });
     }
 
-    love.onmousedown = love.ontouchstart = onMouseDown;
-    window.onmousemove = window.ontouchmove = onMouseMove;
-    window.onmouseup = window.ontouchend = onMouseUp;
+    love.addEventListener('mousedown', onMouseDown);
+    love.addEventListener('touchstart', onMouseDown);
+    document.addEventListener('mousemove', onMouseMove);
+    document.addEventListener('touchmove', onMouseMove, { passive: false });
+    document.addEventListener('mouseup', onMouseUp);
+    document.addEventListener('touchend', onMouseUp);
+    document.addEventListener('mouseleave', onMouseUp);
 
     setTimeout(function () {
         dx = dy = -0.09; // initial speed
