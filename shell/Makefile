@@ -13,7 +13,7 @@ shell.js: shell.c bestline/bestline.c lua/onelua.c libbusybox.so init.lua
 
 busybox-build/emgcc:
 	mkdir -p busybox-build && cd busybox-build && \
-	ln -fs "$$(realpath --relative-to=. "$$(which emcc.py)")" emgcc && \
+	ln -fs "$$(realpath --relative-to=. "$$(which emcc)").py" emgcc && \
 	chmod +x emgcc
 
 libbusybox.so: busybox-build/emgcc busybox_config
