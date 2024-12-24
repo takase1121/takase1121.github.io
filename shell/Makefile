@@ -28,15 +28,10 @@ lua.o: lua/onelua.c
 isocline.o: isocline/src/isocline.c isocline/include/isocline.h
 	$(CC) -o $@ -c $(CFLAGS) -Iisocline/include $<
 
-busybox-build/emgcc:
-	mkdir -p busybox-build && cd busybox-build && \
-	ln -fs "$$(realpath --relative-to=. "$$(which emcc)").py" emgcc && \
-	chmod +x emgcc
-
-busybox.wasm: busybox-build/emgcc busybox_config
+busybox.wasm: busybox_config
 	-cd busybox && git apply ../0001-fix-busybox-not-compiling-on-wasm.patch
 	rsync -aq busybox_config busybox/.config
-	PATH="$$PWD/busybox-build:$$PATH" $(MAKE) -C busybox ARCH=em CROSS_COMPILE=em SKIP_STRIP=y -j $$(nproc)
+	$(MAKE) -C busybox CC=emcc ARCH=em CROSS_COMPILE=em SKIP_STRIP=y -j $$(nproc)
 	cp busybox/0_lib/libbusybox.so.1.37.0_unstripped $@
 	-cd busybox && git apply -R ../0001-fix-busybox-not-compiling-on-wasm.patch
 
