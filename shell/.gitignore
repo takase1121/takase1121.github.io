@@ -3,5 +3,6 @@ node_modules/
 libbusybox.so
 *.min.*
 shell.js
-shell.wasm
+*.wasm
+*.o
 busybox-build/

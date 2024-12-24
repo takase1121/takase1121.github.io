@@ -6,6 +6,6 @@
 	path = shell/busybox
 	url = http://git.busybox.net/busybox/
 	branch = 1_37_stable
-[submodule "shell/bestline"]
-	path = shell/bestline
-	url = https://github.com/jart/bestline.git
+[submodule "shell/isocline"]
+	path = shell/isocline
+	url = https://github.com/daanx/isocline.git

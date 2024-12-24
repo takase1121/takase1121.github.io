@@ -3,9 +3,10 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "build:js": "esbuild --bundle index.mjs --platform=browser --outfile=index.min.js",
-    "build:css": "esbuild --bundle index.css --outfile=index.min.css",
-    "build": "npm run build:js && npm run build:css"
+    "build:js": "esbuild index.mjs --outfile=index.min.js --bundle --minify --sourcemap --target=chrome58,firefox57,safari11,edge18",
+    "build:css": "esbuild index.css --outfile=index.min.css --bundle --minify --sourcemap --target=chrome58,firefox57,safari11,edge16",
+    "build": "npm run build:js && npm run build:css",
+    "format": "prettier *.mjs --write"
   },
   "keywords": [],
   "author": "",
@@ -15,6 +16,7 @@
     "@xterm/addon-fit": "^0.10.0",
     "@xterm/xterm": "^5.5.0",
     "esbuild": "^0.24.2",
+    "prettier": "^3.4.2",
     "xterm-pty": "^0.10.2"
   }
 }
