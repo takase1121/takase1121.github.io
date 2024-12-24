@@ -32,9 +32,9 @@ jobs:
       - run: |
           cd shell
           npm ci
-          make
-          mkdir -p ../build/shell
-          cp index.html index.min.* shell.wasm ../build/shell
+          make install
+          mv install ../build/shell
+
       - env:
           MATRIX_SERVER: ${{ secrets.MATRIX_SERVER }}
           MATRIX_HTTP_SERVER: ${{ secrets.MATRIX_HTTP_SERVER }}
