@@ -71,6 +71,13 @@ window.onload = function () {
         });
     }
 
+    var shellUrl = document.getElementById('shell');
+    var urlNew = document.getElementById('new');
+    setInterval(() => {
+        shellUrl.classList.toggle('pseudohover');
+        urlNew.classList.toggle('show');
+    }, 3500);
+
     love.addEventListener('mousedown', onMouseDown);
     love.addEventListener('touchstart', onMouseDown);
     document.addEventListener('mousemove', onMouseMove);

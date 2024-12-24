@@ -4,7 +4,7 @@ import { openpty } from "xterm-pty";
 import Module from "./shell";
 
 window.addEventListener("load", () => {
-  const term = new Terminal();
+  const term = new Terminal({ fontFamily: 'IBM Plox Mono', letterSpacing: 0 });
   const fitAddon = new FitAddon();
   const { master, slave } = openpty();
 
@@ -18,7 +18,6 @@ window.addEventListener("load", () => {
   let savedState = {},
     startCount = 0;
   async function run(lastModule, v) {
-    console.log(lastModule, v)
     if (lastModule?.fail)
       return slave.write("\x1b[31mCritical lua error. Shell will not restart.\x1b[39m\n");
     const moduleObj = {

@@ -9,6 +9,7 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include <errno.h>
+#include <sys/ioctl.h>
 
 #include "kilo.h"
 #include "isocline.h"
@@ -134,6 +135,15 @@ static int f_getcwd(lua_State *L) {
   return 1;
 }
 
+static int f_get_terminal_size(lua_State *L) {
+  lua_settop(L, 0);
+  struct winsize w = { 0 };
+  ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
+  lua_pushinteger(L, w.ws_row);
+  lua_pushinteger(L, w.ws_col);
+  return 2;
+}
+
 static luaL_Reg lib[] = {
   { "busybox_run", f_busybox_run },
   { "busybox_get_commands", f_busybox_get_commands },
@@ -142,6 +152,7 @@ static luaL_Reg lib[] = {
   { "bbprintln", f_bbprintln },
   { "chdir", f_chdir },
   { "getcwd", f_getcwd },
+  { "get_terminal_size", f_get_terminal_size },
   { NULL, NULL },
 };
 
@@ -214,6 +225,7 @@ int main(int argc, const char **argv) {
 
   // set readline history
   ic_set_history(READLINE_HISTORY_FILE, -1);
+  ic_style_def("ic-prompt", "lime");
 
   if (strcmp(argv[1], "repl") == 0) {
     if (repl_main(argc, argv) != 0) {

@@ -55,15 +55,26 @@ for _, applet in ipairs(shell.busybox_get_commands()) do
 end
 
 local function print_motd()
-  shell.bbprintln([[
-+---------------------------------------------------------------------------+
-| Hey there! This doesn't work very well yet, so quell your expectations!   |
-| This is a Lua-based shell with busybox. You can run the usual busybox     |
-| commands, like ls, cd, tree, echo, etc (sometimes using the [i]wrong[/i] command |
-| will crash the shell). All busybox commands are just Lua functions, but   |
-| to make the experience better you can do [b]ls[/b] instead of [b]ls()[/b].              |
-+---------------------------------------------------------------------------+
-]])
+  local color, bar = {
+    "white", "gray", "red", "yellow", "lime", "aqua", "blue", "fuchsia",
+    "silver", "black", "maroon", "olive", "green", "teal", "navy", "purple"
+  }, {}
+  for i, v in ipairs(color) do
+    bar[i] = string.format("[width=2][bgcolor=%s] [/][/]", v)
+  end
+  shell.bbprintln(string.format([[
+[b][lime]Hey there![/][/b]
+
+This doesn't work very well yet, so quell your expectations!
+This is a Lua-based shell with busybox. You can run the usual busybox commands,
+like ls, cd, tree, echo (sometimes using the [i]wrong[/i] command will crash the shell).
+All busybox commands are just Lua functions,
+but to make the experience better you can do [b]ls[/b] instead of [b]ls()[/b].
+
+%s
+%s
+
+]], table.concat(bar, "", 1, #bar / 2), table.concat(bar, "", (#bar / 2) + 1)))
 end
 
 

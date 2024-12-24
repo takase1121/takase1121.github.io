@@ -20,6 +20,29 @@ main {
     flex: 1;
 }
 
+main h1 sup {
+    color: #22a21f;
+    font-size: 0.95rem;
+    display: none;
+}
+
+main h1 sup.show {
+    display: inline;
+}
+
+main h1 a::after {
+    display: inline-block;
+    content: "$HOME";
+    cursor: pointer;
+}
+
+main h1 a:hover::after,
+main h1 a:focus::after,
+main h1 a:active::after,
+main h1 a.pseudohover::after {
+    content: "$SHELL";
+}
+
 footer {
     margin-bottom: 0.5em;
 }
@@ -46,7 +69,8 @@ a {
 
 a:hover,
 a:focus,
-a:active {
+a:active,
+a.pseudohover {
     background-size: 100% 0.1em;
 }
 

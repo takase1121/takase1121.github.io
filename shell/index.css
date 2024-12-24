@@ -1,4 +1,8 @@
 @import '@xterm/xterm/css/xterm.css';
+@font-face {
+    font-family: 'IBM Plox Mono';
+    src: url('../IBMPloxMono-Regular.woff2');
+}
 
 html,body,#terminal {
   width: 100%;

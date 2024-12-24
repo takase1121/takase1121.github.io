@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "build:js": "esbuild index.mjs --outfile=index.min.js --bundle --minify --sourcemap --target=chrome58,firefox57,safari11,edge18",
-    "build:css": "esbuild index.css --outfile=index.min.css --bundle --minify --sourcemap --target=chrome58,firefox57,safari11,edge16",
+    "build:js": "esbuild index.mjs --bundle --minify --sourcemap --target=chrome58,firefox57,safari11,edge18 --out-extension:.js=.min.js",
+    "build:css": "esbuild index.css --bundle --minify --sourcemap --target=chrome58,firefox57,safari11,edge16 --loader:.woff=file --loader:.woff2=file --out-extension:.css=.min.css --asset-names=[name]",
     "build": "npm run build:js && npm run build:css",
     "format": "prettier *.mjs --write"
   },
