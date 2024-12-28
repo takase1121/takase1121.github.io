@@ -18,6 +18,15 @@
 	<script type="application/javascript" src="index.min.js"></script>
 </head>
 <body>
-	<div id="terminal"></div>
+	<noscript>
+		<style>.js { display: none; }</style>
+		<div class="nojs">
+			<span>
+				Wow, how very smart of you to block JavaScript!
+				Turn it back on. This shell uses JavaScript and WebAssembly.
+			</span>
+		</div>
+	</noscript>
+	<div class="js" id="terminal"></div>
 </body>
 </html>
