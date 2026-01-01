@@ -1,0 +1,23 @@
+#!/bin/sh
+
+# mount all filesystems in fstab
+mount -a
+
+# do not print any kernel messages to the console
+#echo 0 > /proc/sys/kernel/printk
+
+# set console prompt to basename of $PWD
+export PS1='\W% '
+
+export HOME='/root'
+
+# set terminal type to xterm-256color for serial console
+if [ $(tty) = '/dev/ttyS0' ]; then
+    export TERM='xterm-256color'
+fi
+
+echo
+echo "Enable networking using 'udhcpc'"
+echo "Files send via emulator appear in /mnt/"
+
+cd ~
