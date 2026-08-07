@@ -35,10 +35,6 @@ jobs:
           make install
           mv install ../build/shell
 
-      - run: |
-          mkdir -p build/test
-          echo '{"hello":"world"}' > build/test/index.json
-
       - env:
           MATRIX_SERVER: ${{ secrets.MATRIX_SERVER }}
           MATRIX_HTTP_SERVER: ${{ secrets.MATRIX_HTTP_SERVER }}
