@@ -1,117 +1,184 @@
 window.onload = function () {
-    var commitDy, commitDx, lastX, lastY;
     var love = document.getElementById("heart");
-    var friction = 0.005,
-        dx = 0,
-        dy = 0,
-        drag = false;
-    var finger = null;
+    if (!love) return;
+
+    // Physics State
+    var x = window.innerWidth / 2;
+    var y = window.innerHeight / 2;
+    var vx = -5; // Initial horizontal velocity (px/frame)
+    var vy = -5; // Initial vertical velocity (px/frame)
+    
+    // Physics Parameters
+    var friction = 0.946;  // Velocity multiplier per frame (0.985 = air resistance)
+    var bounce = 0.6;      // Coefficient of restitution (energy retained on bounce)
+    var minVelocity = 0.05; // Stop threshold to prevent infinite micro-movements
+    
+    // Interaction Tracking
+    var drag = false;
+    var fingerId = null;
+    var lastX = 0, lastY = 0;
+    var lastTime = 0;
+    var moveVx = 0, moveVy = 0;
+
 
     function clamp(v, min, max) {
         return Math.min(Math.max(v, min), max);
     }
 
-    function foreach(query, fn) {
-        var elements = document.querySelectorAll(query);
-        for (var i = 0; i < elements.length; i++) {
-            fn(elements[i], i);
-        }
-    }
-
-    function findFinger(touchList, id) {
-        for (var i = 0; i < touchList.length; i++) {
-            if (touchList[i].identifier === id) return touchList[i];
+    function getTouch(e, id) {
+        for (var i = 0; i < e.touches.length; i++) {
+            if (e.touches[i].identifier === id) return e.touches[i];
         }
         return null;
     }
 
-    function onMouseDown(e) {
+    function getChangedTouch(e, id) {
+        for (var i = 0; i < e.changedTouches.length; i++) {
+            if (e.changedTouches[i].identifier === id) return e.changedTouches[i];
+        }
+        return null;
+    }
+
+    function onPointerDown(e) {
         if (drag) return;
+
+        var point = e;
+        if (window.TouchEvent && e instanceof TouchEvent) {
+            point = e.targetTouches[0];
+            fingerId = point.identifier;
+        }
+
         drag = true;
-        dx = dy = commitDx = commitDy = 0;
-        love.style.position = "fixed";
-        // disable text selection when dragging since its distracting
-        foreach("*", function (el) {
-            el.style.userSelect = "none";
-        });
+        vx = vy = 0;
+        lastX = point.clientX;
+        lastY = point.clientY;
+        lastTime = performance.now();
+        moveVx = moveVy = 0;
 
-        if (e instanceof TouchEvent)
-            finger = e.targetTouches[0].identifier;
+        document.body.style.userSelect = "none";
     }
 
-    function onMouseMove(e) {
+    function onPointerMove(e) {
         if (!drag) return;
-        if (e instanceof TouchEvent) {
-            e.preventDefault();
-            e = findFinger(e.touches, finger);
-            if (!e) return;
+
+        var point = e;
+        if (window.TouchEvent && e instanceof TouchEvent) {
+            e.preventDefault(); // Prevent page scrolling during drag
+            point = getTouch(e, fingerId);
+            if (!point) return;
         }
-        var loveBox = love.getBoundingClientRect();
-        // center the heart around the cursor
-        love.style.left = clamp(Math.round(e.clientX - loveBox.width / 2), 0, window.innerWidth - loveBox.width) + "px";
-        love.style.top = clamp(Math.round(e.clientY - loveBox.height / 2), 0, window.innerHeight - loveBox.height) + "px";
-        // calculate velocity
-        commitDx = (e.clientX - lastX) / window.innerWidth;
-        commitDy = (e.clientY - lastY) / window.innerHeight;
-        lastX = e.clientX;
-        lastY = e.clientY;
+
+        var now = performance.now();
+        var dt = (now - lastTime) / 1000; // Convert to seconds
+
+        if (dt > 0) {
+            // Calculate real-time throwing velocity (px/s converted to px/frame equivalent)
+            moveVx = (point.clientX - lastX) / (dt * 60);
+            moveVy = (point.clientY - lastY) / (dt * 60);
+        }
+
+        lastX = point.clientX;
+        lastY = point.clientY;
+        lastTime = now;
+
+        var rect = love.getBoundingClientRect();
+        x = clamp(point.clientX - rect.width / 2, 0, window.innerWidth - rect.width);
+        y = clamp(point.clientY - rect.height / 2, 0, window.innerHeight - rect.height);
+
+        love.style.left = Math.round(x) + "px";
+        love.style.top = Math.round(y) + "px";
     }
 
-    function onMouseUp(e) {
+    function onPointerUp(e) {
         if (!drag) return;
-        if (e instanceof TouchEvent) {
-            e = findFinger(e.changedTouches, finger);
-            if (!e) return;
+
+        if (window.TouchEvent && e instanceof TouchEvent) {
+            var point = getChangedTouch(e, fingerId);
+            if (!point) return;
         }
+
         drag = false;
-        dx = commitDx;
-        dy = commitDy;
-        foreach("*", function (el) {
-            el.style.userSelect = "auto";
-        });
+        fingerId = null;
+
+        // Commit throw velocity
+        vx = moveVx;
+        vy = moveVy;
+
+        document.body.style.userSelect = "auto";
     }
 
+    // Toggle Animation Interval
     var shellUrl = document.getElementById('shell');
     var urlNew = document.getElementById('new');
-    setInterval(() => {
-        shellUrl.classList.toggle('pseudohover');
-        urlNew.classList.toggle('show');
-    }, 3500);
-
-    love.addEventListener('mousedown', onMouseDown);
-    love.addEventListener('touchstart', onMouseDown);
-    document.addEventListener('mousemove', onMouseMove);
-    document.addEventListener('touchmove', onMouseMove, { passive: false });
-    document.addEventListener('mouseup', onMouseUp);
-    document.addEventListener('touchend', onMouseUp);
-    document.addEventListener('mouseleave', onMouseUp);
-
-    setTimeout(function () {
-        dx = dy = -0.09; // initial speed
-        love.style.position = "fixed";
+    if (shellUrl && urlNew) {
         setInterval(function () {
-            if (drag) return;
-            var vw = window.innerWidth,
-                vh = window.innerHeight;
-            var loveBox = love.getBoundingClientRect();
-            var realDy = vh * dy,
-                realDx = vw * dx;
-            loveBox.x += realDx;
-            loveBox.right += realDx;
-            loveBox.y += realDy;
-            loveBox.bottom += realDy;
-            dx = Math.trunc((dx - (dx > 0 ? Math.min : Math.max)(dx, dx * friction)) * 1000) / 1000;
-            dy = Math.trunc((dy - (dy > 0 ? Math.min : Math.max)(dy, dy * friction)) * 1000) / 1000;
-            if (loveBox.right >= vw || loveBox.x <= 0) {
-                dx = -dx;
-                loveBox.x = clamp(loveBox.x, 0, vw - loveBox.width);
+            shellUrl.classList.toggle('pseudohover');
+            urlNew.classList.toggle('show');
+        }, 3500);
+    }
+
+    // Event Listeners
+    love.addEventListener('mousedown', onPointerDown);
+    love.addEventListener('touchstart', onPointerDown, { passive: false });
+    
+    document.addEventListener('mousemove', onPointerMove);
+    document.addEventListener('touchmove', onPointerMove, { passive: false });
+    
+    document.addEventListener('mouseup', onPointerUp);
+    document.addEventListener('touchend', onPointerUp);
+    document.addEventListener('mouseleave', onPointerUp);
+
+    // Main Physics Loop
+    function physicsLoop() {
+        if (!drag) {
+            var vw = window.innerWidth;
+            var vh = window.innerHeight;
+            var rect = love.getBoundingClientRect();
+            var w = rect.width;
+            var h = rect.height;
+
+            // Apply position movement
+            x += vx;
+            y += vy;
+
+            // Apply friction
+            vx *= friction;
+            vy *= friction;
+
+            if (Math.abs(vx) < minVelocity) vx = 0;
+            if (Math.abs(vy) < minVelocity) vy = 0;
+
+            // Wall Collisions (Left / Right)
+            if (x <= 0) {
+                x = 0;
+                vx = -vx * bounce;
+            } else if (x + w >= vw) {
+                x = vw - w;
+                vx = -vx * bounce;
             }
-            if (loveBox.bottom >= vh || loveBox.y <= 0) {
-                dy = -dy;
-                loveBox.y = clamp(loveBox.y, 0, vh - loveBox.height);
+
+            // Wall Collisions (Top / Bottom)
+            if (y <= 0) {
+                y = 0;
+                vy = -vy * bounce;
+            } else if (y + h >= vh) {
+                y = vh - h;
+                vy = -vy * bounce;
             }
-            love.style.left = Math.round(loveBox.x) + "px";
-            love.style.top = Math.round(loveBox.y) + "px";
-        }, 1 / 60 * 1000);
-    }, 5000);
-}
+
+            love.style.left = Math.round(x) + "px";
+            love.style.top = Math.round(y) + "px";
+        }
+
+        requestAnimationFrame(physicsLoop);
+    }
+
+    // Start physics after 3 seconds delay
+    setTimeout(function () {
+        love.style.position = "fixed";
+        var rect = love.getBoundingClientRect();
+        x = rect.left;
+        y = rect.top;
+        requestAnimationFrame(physicsLoop);
+    }, 3000);
+};
