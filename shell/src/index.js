@@ -14,7 +14,7 @@ async function main() {
     const modalOkBtn = document.getElementById('modal-ok');
 
     // pre check WASM, SHM and Service Worker
-    if (!window.WebAssembly || !window.SharedArrayBuffer || !navigator.serviceWorker) {
+    if (!window.WebAssembly || !navigator.serviceWorker) {
         modalTitle.textContent = 'Unsupported Environment';
         modalContent.textContent = 'Your browser does not support WebAssembly, SharedArrayBuffer and/or Service Workers, which are needed for this functionality.';
         modalOkBtn.style.display = 'none';
