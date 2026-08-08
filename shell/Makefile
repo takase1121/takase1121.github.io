@@ -1,66 +1,60 @@
-CC = emcc
-NPM ?= npm
-CP ?= cp
-INSTALL ?= install
-GIT ?= git
-RM ?= rm -f
-DESTDIR ?= install
+SRC_DIR := src
+DST_DIR := build
 
-CFLAGS += -std=gnu23 -O3
-LDFLAGS += \
-	-sASYNCIFY \
-	-sMODULARIZE \
-	-sASYNCIFY_STACK_SIZE=10248 \
-	-sEXIT_RUNTIME=1 \
-	-sENVIRONMENT=web \
-	--js-library=node_modules/xterm-pty/emscripten-pty.js \
-	-lidbfs.js
+C2W_DIR := $(SRC_DIR)/container2wasm
+C2W_RUNCONTAINER_DIR := $(C2W_DIR)/extras/runcontainerjs/src/web
 
-OBJS = shell.o lua.o isocline.o busybox.wasm
+SRC_JS := \
+	$(SRC_DIR)/index.js \
+	$(SRC_DIR)/sw.js \
+	$(SRC_DIR)/index.css \
+	$(C2W_RUNCONTAINER_DIR)/stack-worker.js \
+	$(C2W_RUNCONTAINER_DIR)/worker-util.js
+
+SRC_DOCKER := \
+	$(SRC_DIR)/Dockerfile \
+	$(SRC_DIR)/overlay/etc/profile \
+	$(SRC_DIR)/overlay/etc/motd
 
 
-.PHONY: clean all busybox-menuconfig format install
+all: $(DST_DIR)/index.html \
+	$(DST_DIR)/oci-image/index.json \
+	$(DST_DIR)/imagemounter.wasm.gzip \
+	$(DST_DIR)/vm/.vm \
+	$(DST_DIR)/.js
 
-all: index.min.js index.min.css
+$(DST_DIR)/index.html: $(SRC_DIR)/index.html | $(DST_DIR)
+	cp $< $@
 
-shell.js: $(OBJS)
-	$(CC) -o $@ $^ $(LDFLAGS)
+$(DST_DIR)/.js: $(SRC_JS) | $(DST_DIR)
+	npm ci && npm run build
+	touch $@
 
-shell.o: shell.c init.lua
-	$(CC) -o $@ -c $(CFLAGS) -Wall -pedantic -Ilua -Iisocline/include -Ikilo $<
+# c2w VM
+$(DST_DIR)/vm/.vm: | $(DST_DIR)/vm
+	c2w --to-js --external-bundle $(DST_DIR)/vm/
+	touch $@
 
-lua.o: lua/onelua.c
-	$(CC) -o $@ -c $(CFLAGS) -Ilua -DMAKE_LIB $<
+# imagemounter
+$(DST_DIR)/imagemounter.wasm.gzip: $(C2W_DIR)/out/imagemounter.wasm | $(DST_DIR)
+	cat $< | gzip > $@
 
-isocline.o: isocline/src/isocline.c isocline/include/isocline.h
-	$(CC) -o $@ -c $(CFLAGS) -Iisocline/include $<
+$(C2W_DIR)/out/imagemounter.wasm:
+	$(MAKE) -C $(C2W_DIR) imagemounter.wasm
 
-busybox.wasm: busybox_config
-	-cd busybox && $(GIT) apply ../0001-fix-busybox-not-compiling-on-wasm.patch
-	$(CP) -a busybox_config busybox/.config
-	$(MAKE) -C busybox CC=emcc ARCH=em CROSS_COMPILE=em SKIP_STRIP=y
-	$(CP) busybox/0_lib/libbusybox.so.1.37.0_unstripped $@
-	-cd busybox && $(GIT) apply -R ../0001-fix-busybox-not-compiling-on-wasm.patch
+# docker image
+$(DST_DIR)/oci-image/index.json: $(SRC_DOCKER) | $(DST_DIR)/oci-image
+	@-docker buildx create --name container --driver=docker-container
+	docker buildx build --builder=container --output type=oci,oci-mediatype=true,compression=estargz,force-compression=true,dest=- $(SRC_DIR) | tar -C $(DST_DIR)/oci-image -xf -
+	touch $@
 
-index.min.js: index.mjs shell.js
-	$(NPM) run build:js -- --outdir=.
+$(DST_DIR)/%:
+	mkdir -p $@
 
-index.min.css: index.css
-	$(NPM) run build:css -- --outdir=.
-
-busybox-menuconfig:
-	-cd busybox && $(GIT) apply ../0001-fix-busybox-not-compiling-on-wasm.patch
-	cd busybox && $(MAKE) menuconfig
-	-cd busybox && $(GIT) apply -R ../0001-fix-busybox-not-compiling-on-wasm.patch
-
-format:
-	$(NPM) run format
-
-install: all
-	$(INSTALL) -D index.html $(DESTDIR)/index.html
-	$(INSTALL) -D shell.wasm $(DESTDIR)/shell.wasm
-	$(NPM) run build:js -- --outdir=$(DESTDIR)
-	$(NPM) run build:css -- --outdir=$(DESTDIR)
+$(DST_DIR):
+	mkdir -p $@
 
 clean:
-	$(RM) -r shell.js shell.wasm index.min.js index.min.css index.min.js.map index.min.css.map $(OBJS) $(DESTDIR)
+	rm -rf $(DST_DIR)
+
+.PHONY: all clean

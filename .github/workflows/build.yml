@@ -20,20 +20,22 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with: { submodules: recursive }
+      
       - run: sudo apt-get install -y build-essential
+
       - run: rsync -avzh . build --exclude .git --exclude .github --exclude build --exclude shell
+      
       - uses: nizarmah/auto-minify@v3
         with:
             directory: build
             output: build
             overwrite: true
-      - uses: mymindstorm/setup-emsdk@v14
-        with: { version: 3.1.70 }
+
       - run: |
           cd shell
           npm ci
-          make install
-          mv install ../build/shell
+          make
+          mv build ../build/shell
 
       - env:
           MATRIX_SERVER: ${{ secrets.MATRIX_SERVER }}
@@ -47,8 +49,10 @@ jobs:
             "m.homeserver": {"base_url": "$MATRIX_HTTP_SERVER"}
           }
           EOF
+
       - uses: actions/upload-pages-artifact@v3
         with:
           path: build
+
       - uses: actions/deploy-pages@v4
         id: deployment

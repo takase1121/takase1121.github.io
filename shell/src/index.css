@@ -1,0 +1,218 @@
+body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.terminal {
+    width: 100%;
+    flex: 1;
+    background: #000;
+}
+
+.terminal-footer {
+    height: 2.5lh;
+    background: #161b22;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 1em;
+    font-size: 11pt;
+    user-select: none;
+}
+
+.footer-left,
+.footer-right {
+    display: flex;
+    align-items: center;
+    gap: 2em;
+}
+
+/* Status Indicator & Ethernet Icon */
+.status-dot {
+    width: 1em;
+    height: 1em;
+    border-radius: 50%;
+    transition: background-color 0.3s, box-shadow 0.3s;
+
+    background-color: #8b8d91;
+    box-shadow: 0 0 6px #8b8d91;
+}
+
+.status-dot.ok {
+    background-color: #238636;
+    box-shadow: 0 0 6px #238636;
+}
+
+.status-dot.fail {
+    background-color: #da3633;
+    box-shadow: 0 0 6px #da3633;
+}
+
+.status-dot.idle {
+    background-color: #d29922;
+    box-shadow: 0 0 6px #d29922;
+}
+
+.status-text {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: #686f77;
+}
+
+.status-text.ok {
+    color: #b6c2cf;
+}
+
+.status-text.fail {
+    color: #da3633;
+}
+
+
+.bytes-container {
+    position: relative;
+    cursor: help;
+    color: #8b949e;
+    text-decoration: underline dotted #484f58;
+}
+
+.bytes-container .current-file {
+    margin-right: 1em;
+}
+
+.bytes-container:hover {
+    color: #58a6ff;
+}
+
+/* Popover Box */
+.stats-popover {
+    visibility: hidden;
+    opacity: 0;
+    position: absolute;
+    bottom: 1.2lh;
+    left: 0;
+    background: #21262d;
+    border: 1px solid #30363d;
+    border-radius: 6px;
+    padding: 8px 12px;
+    width: 32ch;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+    transition: opacity 0.15s ease, visibility 0.15s ease;
+    z-index: 100;
+}
+
+.bytes-container:hover .stats-popover {
+    visibility: visible;
+    opacity: 1;
+}
+
+.popover-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 4px;
+}
+
+.popover-row:last-child {
+    margin-bottom: 0;
+}
+
+.popover-label {
+    color: #8b949e;
+}
+
+.popover-value {
+    color: #c9d1d9;
+    font-weight: 600;
+}
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+}
+
+.modal-overlay.hidden {
+    display: none;
+}
+
+/* Modal Card */
+.modal-card {
+    background: #252526;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.05);
+
+    color: #e0e0e0;
+    border-radius: 8px;
+    padding: 24px;
+
+    width: min(600px, calc(100vw - 32px));
+    max-height: calc(100vh - 32px);
+    overflow-y: auto;
+    box-sizing: border-box;
+}
+
+.modal-card h3 {
+    margin: 0 0 12px 0;
+    font-size: 1.2rem;
+    color: #fff;
+}
+
+.modal-card p {
+    margin: 0 0 20px 0;
+    font-size: 0.9rem;
+    line-height: 1.4;
+    color: #aaa;
+}
+
+/* Modal Actions */
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+}
+
+.btn {
+    padding: 8px 16px;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    font-family: inherit;
+    cursor: pointer;
+    border: none;
+    transition: background 0.2s;
+}
+
+.btn-secondary {
+    background: #333;
+    color: #ccc;
+}
+
+.btn-secondary:hover {
+    background: #444;
+}
+
+.btn-primary {
+    background: #007acc;
+    color: #fff;
+}
+
+.btn-primary:hover {
+    background: #005999;
+}

@@ -1,22 +1,19 @@
 {
   "name": "shell",
   "version": "1.0.0",
-  "main": "index.js",
+  "description": "",
+  "main": "index.html",
   "scripts": {
-    "build:js": "esbuild index.mjs --bundle --minify --sourcemap --target=es2020 --out-extension:.js=.min.js",
-    "build:css": "esbuild index.css --bundle --minify --sourcemap --target=chrome58,firefox57,safari11,edge16 --loader:.woff=file --loader:.woff2=file --out-extension:.css=.min.css --asset-names=[name]",
-    "build": "npm run build:js && npm run build:css",
-    "format": "prettier *.mjs --write"
+    "build": "node build.js"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "description": "",
+  "devDependencies": {
+    "esbuild": "^0.28.1"
+  },
   "dependencies": {
-    "@xterm/addon-fit": "^0.10.0",
-    "@xterm/xterm": "^5.5.0",
-    "esbuild": "^0.28.1",
-    "prettier": "^3.4.2",
-    "xterm-pty": "^0.10.2"
+    "@bjorn3/browser_wasi_shim": "^0.4.2",
+    "@xterm/addon-fit": "^0.11.0",
+    "@xterm/xterm": "^6.0.0",
+    "xterm-pty": "^0.12.0"
   }
 }

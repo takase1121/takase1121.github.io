@@ -1,0 +1,14 @@
+[1;36m======================================================================[0m
+[1;32m  Hi there![0m
+  This is a real [1;33mAlpine Linux[0m instance running inside your browser,
+  packaged via [1;34mcontainer2wasm[0m ([4;34mhttps://github.com/ktock/container2wasm[0m)
+  with [1;35mQEMU x86_64[0m emulation.
+
+  [1;37mInstalled packages:[0m
+  [32m•[0m nano     [32m•[0m vim      [32m•[0m tcc
+  [32m•[0m python3  [32m•[0m htop     [32m•[0m curl     [32m•[0m lynx
+
+  [1;35mEnjoy![0m
+[1;36m======================================================================[0m
+
+
