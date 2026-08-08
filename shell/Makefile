@@ -32,7 +32,7 @@ $(DST_DIR)/.js: $(SRC_JS) | $(DST_DIR)/shell
 
 # c2w VM
 $(DST_DIR)/.vm: $(C2W_DIR)/out/c2w | $(DST_DIR)/shell/vm
-	$< --to-js --external-bundle $(DST_DIR)/shell/vm/
+	$< --to-js --external-bundle --extra-flag="--cache-from=type=gha" --extra-flag="--cache-to=type=gha,mode=max" $(DST_DIR)/shell/vm/
 	touch $@
 
 # imagemounter
