@@ -42,7 +42,11 @@ $(DST_DIR)/shell/imagemounter.wasm.gzip: $(C2W_DIR)/out/imagemounter.wasm | $(DS
 # docker image
 $(DST_DIR)/shell/oci-image/index.json: $(SRC_DOCKER) | $(DST_DIR)/shell/oci-image
 	@-docker buildx create --name container --driver=docker-container
-	docker buildx build --builder=container --output type=oci,oci-mediatype=true,compression=estargz,force-compression=true,dest=- $(SRC_DIR) | tar -C $(DST_DIR)/shell/oci-image -xf -
+	docker buildx build --builder=container \
+		--cache-from type=gha \
+		--cache-to type=gha,mode=max \
+		--output type=oci,oci-mediatype=true,compression=estargz,force-compression=true,dest=- $(SRC_DIR) \
+		| tar -C $(DST_DIR)/shell/oci-image -xf -
 	touch $@
 
 $(C2W_DIR)/out/%:
