@@ -5,6 +5,7 @@ C2W_DIR := $(SRC_DIR)/container2wasm
 C2W_RUNCONTAINER_DIR := $(C2W_DIR)/extras/runcontainerjs/src/web
 
 SRC_JS := \
+	build.js \
 	$(SRC_DIR)/index.js \
 	$(SRC_DIR)/sw.js \
 	$(SRC_DIR)/index.css \
@@ -16,37 +17,36 @@ SRC_DOCKER := \
 	$(SRC_DIR)/overlay/etc/profile \
 	$(SRC_DIR)/overlay/etc/motd
 
-
-all: $(DST_DIR)/index.html \
-	$(DST_DIR)/oci-image/index.json \
-	$(DST_DIR)/imagemounter.wasm.gzip \
-	$(DST_DIR)/vm/.vm \
+all: $(DST_DIR)/shell/index.html \
+	$(DST_DIR)/shell/oci-image/index.json \
+	$(DST_DIR)/shell/imagemounter.wasm.gzip \
+	$(DST_DIR)/.vm \
 	$(DST_DIR)/.js
 
-$(DST_DIR)/index.html: $(SRC_DIR)/index.html | $(DST_DIR)
+$(DST_DIR)/shell/index.html: $(SRC_DIR)/index.html | $(DST_DIR)/shell
 	cp $< $@
 
-$(DST_DIR)/.js: $(SRC_JS) | $(DST_DIR)
-	npm ci && npm run build
+$(DST_DIR)/.js: $(SRC_JS) | $(DST_DIR)/shell
+	npm ci && npm run build $(DST_DIR)
 	touch $@
 
 # c2w VM
-$(DST_DIR)/vm/.vm: | $(DST_DIR)/vm
-	c2w --to-js --external-bundle $(DST_DIR)/vm/
+$(DST_DIR)/.vm: $(C2W_DIR)/out/c2w | $(DST_DIR)/shell/vm
+	$< --to-js --external-bundle $(DST_DIR)/shell/vm/
 	touch $@
 
 # imagemounter
-$(DST_DIR)/imagemounter.wasm.gzip: $(C2W_DIR)/out/imagemounter.wasm | $(DST_DIR)
+$(DST_DIR)/shell/imagemounter.wasm.gzip: $(C2W_DIR)/out/imagemounter.wasm | $(DST_DIR)
 	cat $< | gzip > $@
 
-$(C2W_DIR)/out/imagemounter.wasm:
-	$(MAKE) -C $(C2W_DIR) imagemounter.wasm
-
 # docker image
-$(DST_DIR)/oci-image/index.json: $(SRC_DOCKER) | $(DST_DIR)/oci-image
+$(DST_DIR)/shell/oci-image/index.json: $(SRC_DOCKER) | $(DST_DIR)/shell/oci-image
 	@-docker buildx create --name container --driver=docker-container
-	docker buildx build --builder=container --output type=oci,oci-mediatype=true,compression=estargz,force-compression=true,dest=- $(SRC_DIR) | tar -C $(DST_DIR)/oci-image -xf -
+	docker buildx build --builder=container --output type=oci,oci-mediatype=true,compression=estargz,force-compression=true,dest=- $(SRC_DIR) | tar -C $(DST_DIR)/shell/oci-image -xf -
 	touch $@
+
+$(C2W_DIR)/out/%:
+	$(MAKE) -C $(C2W_DIR) $(notdir $@)
 
 $(DST_DIR)/%:
 	mkdir -p $@

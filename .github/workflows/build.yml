@@ -34,8 +34,8 @@ jobs:
       - run: |
           cd shell
           npm ci
-          make
-          mv build ../build/shell
+          make -j$(nproc)
+          mv build/shell ../build/shell
 
       - env:
           MATRIX_SERVER: ${{ secrets.MATRIX_SERVER }}

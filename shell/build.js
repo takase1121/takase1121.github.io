@@ -1,4 +1,7 @@
+const process = require('process');
 const esbuild = require('esbuild');
+
+const outDir = process.argv[2];
 
 // build runcontainer stack-worker.js
 const c2wSrc = `${__dirname}/src/container2wasm/extras/runcontainerjs/src/web`;
@@ -7,7 +10,7 @@ esbuild.build({
   bundle: true,
   sourcemap: true,
   target: ['es2020'],
-  outdir: 'build/runcontainer',
+  outdir: outDir + '/shell/runcontainer',
 });
 
 
@@ -17,7 +20,7 @@ esbuild.build({
   bundle: true,
   sourcemap: true,
   target: ['es2020'],
-  outdir: 'build',
+  outdir:  outDir + '/shell',
   alias: {
     '@runcontainer': `${c2wSrc}/runcontainer.js`,
   }
