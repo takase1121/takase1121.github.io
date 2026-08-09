@@ -34,11 +34,35 @@ jobs:
             output: build
             overwrite: true
 
-      - run: |
+      - name: Cache C2W layers
+        uses: actions/cache@v6
+        with:
+          path: /tmp/.buildx-cache-c2w
+          key: ${{ runner.os }}-cache-c2w
+
+      - name: Cache Image Layers
+        uses: actions/cache@v6
+        with:
+          path: /tmp/.buildx-cache-img
+          key: ${{ runner.os }}-cache-img-${{ hashFiles('shell/src/Dockerfile') }}-${{ hashFiles('shell/src/overlay/**') }}
+
+      - env:
+          C2W_BUILDX_ARGS: >-
+            --extra-flag --cache-from=type=local,src=/tmp/.buildx-cache-c2w
+            --extra-flag --cache-to=type=local,dest=/tmp/.buildx-cache-c2w-new,mode=max
+          IMG_BUILDX_ARGS: >-
+            --cache-from=type=local,src=/tmp/.buildx-cache-img
+            --cache-to=type=local,dest=/tmp/.buildx-cache-img-new,mode=max
+        run: |
           cd shell
           npm ci
           make -j$(nproc)
           mv build/shell ../build/shell
+
+      - run: |
+          rm -rf /tmp/.buildx-cache-c2w /tmp/.buildx-cache-img
+          mv /tmp/.buildx-cache-c2w-new /tmp/.buildx-cache-c2w
+          mv /tmp/.buildx-cache-img-new /tmp/.buildx-cache-img
 
       - env:
           MATRIX_SERVER: ${{ secrets.MATRIX_SERVER }}

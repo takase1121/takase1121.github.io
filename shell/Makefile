@@ -32,7 +32,7 @@ $(DST_DIR)/.js: $(SRC_JS) | $(DST_DIR)/shell
 
 # c2w VM
 $(DST_DIR)/.vm: $(C2W_DIR)/out/c2w | $(DST_DIR)/shell/vm
-	$< --to-js --external-bundle --extra-flag="--cache-from=type=gha" --extra-flag="--cache-to=type=gha,mode=max" $(DST_DIR)/shell/vm/
+	$< --to-js --external-bundle $(C2W_BUILDX_ARGS) $(DST_DIR)/shell/vm/
 	touch $@
 
 # imagemounter
@@ -43,8 +43,7 @@ $(DST_DIR)/shell/imagemounter.wasm.gzip: $(C2W_DIR)/out/imagemounter.wasm | $(DS
 $(DST_DIR)/shell/oci-image/index.json: $(SRC_DOCKER) | $(DST_DIR)/shell/oci-image
 	@-docker buildx create --name container --driver=docker-container
 	docker buildx build --builder=container \
-		--cache-from type=gha \
-		--cache-to type=gha,mode=max \
+		$(IMG_BUILDX_ARGS) \
 		--output type=oci,oci-mediatype=true,compression=estargz,force-compression=true,dest=- $(SRC_DIR) \
 		| tar -C $(DST_DIR)/shell/oci-image -xf -
 	touch $@
