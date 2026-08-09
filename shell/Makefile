@@ -44,7 +44,7 @@ $(DST_DIR)/shell/oci-image/index.json: $(SRC_DOCKER) | $(DST_DIR)/shell/oci-imag
 	@-docker buildx create --name container --driver=docker-container
 	docker buildx build --builder=container \
 		$(IMG_BUILDX_ARGS) \
-		--output type=oci,oci-mediatype=true,compression=estargz,force-compression=true,dest=- $(SRC_DIR) \
+		--output type=oci,dest=- $(SRC_DIR) \
 		| tar -C $(DST_DIR)/shell/oci-image -xf -
 	touch $@
 
