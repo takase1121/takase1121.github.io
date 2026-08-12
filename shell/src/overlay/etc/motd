@@ -5,7 +5,7 @@
   with [1;35mQEMU x86_64[0m emulation.
 
   [1;37mInstalled packages:[0m
-  [32m•[0m nano     [32m•[0m vim      [32m•[0m tcc
+  [32m•[0m nano     [32m•[0m vim      [32m•[0m tcc      [32m•[0m fastfetch
   [32m•[0m python3  [32m•[0m htop     [32m•[0m curl     [32m•[0m lynx
 
   [1;35mEnjoy![0m

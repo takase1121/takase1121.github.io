@@ -3,11 +3,11 @@
 # tell host we are done
 echo 1 > /host/.init-done
 
+export PS1='\[\033[01;32m\]\w\[\033[00m\] \$ '
+cd /root
+
 if [ -t 0 ] && [ -s /etc/motd ]; then
     eval $(resize)
     cat /etc/motd
+    fastfetch
 fi
-
-export PS1='\[\033[01;32m\]\w\[\033[00m\] \$ '
-
-cd /root
