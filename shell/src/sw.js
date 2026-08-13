@@ -33,9 +33,15 @@ self.addEventListener('message', (event) => {
 
 self.addEventListener('fetch', (event) => {
     const url = new URL(event.request.url);
+    let request = event.request;
 
     if (url.pathname.endsWith('sw-ping')) {
         return event.respondWith(new Response(null, { status: 200 }));
+    }
+    if (url.pathname.includes('/blobs/sha256')) {
+        // append .gz to fix stargz not working well when compressed
+        url.pathname += '.gz';
+        request = new Request(url, event.request);
     }
 
     event.respondWith(
@@ -43,7 +49,7 @@ self.addEventListener('fetch', (event) => {
             const clientId = event.clientId;
             const client = await self.clients.get(clientId);
 
-            const response = await fetch(event.request);
+            const response = await fetch(request);
 
             // Handle opaque responses (status 0 / no-cors requests) directly
             if (!response.ok || response.status === 0 || response.type === 'opaque') {
