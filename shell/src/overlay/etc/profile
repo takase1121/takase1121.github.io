@@ -8,7 +8,7 @@ cd /root
 
 if [ -t 0 ] && [ -s /etc/motd ]; then
     eval $(resize)
-    if [ $COLUMNS -lt 110 ]; then
+    if [ $COLUMNS -gt 110 ]; then
         fastfetch --file /etc/motd
     else
         cat /etc/motd
